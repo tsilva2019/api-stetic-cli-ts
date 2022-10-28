@@ -1,11 +1,11 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Pessoa } from './Pessoa';
 
 @Entity('agendamentos')
 export class Agendamento {
 
     @PrimaryGeneratedColumn('uuid')
-    id: number
+    id: string
 
     @Column({ type: 'date' })
     dataAgendamento: Date
@@ -19,4 +19,13 @@ export class Agendamento {
     @ManyToOne(() => Pessoa, pessoa => pessoa.agendamentos)
     @JoinColumn({name: 'cliente_id'})
     cliente: Pessoa
+
+    @CreateDateColumn()
+    createdDate: Date
+
+    @UpdateDateColumn()
+    updatedDate: Date
+
+    @DeleteDateColumn()
+    deletedDate: Date
 }
