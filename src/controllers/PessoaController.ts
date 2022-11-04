@@ -12,6 +12,24 @@ export class PessoaController {
         return res.status(200).json(pessoas);
     }
 
+    async listAllAgendamentosCliente(req: Request, res: Response) {
+        const { idCliente } = req.params
+            const agendamentos = await agendamentoRepository.findAndCount({
+                relations: {
+                    cliente: true
+                },
+                where: {
+                    cliente: {
+                        id: idCliente
+                    }
+                },
+            });
+            if (agendamentos[1] === 0) {
+                throw new NotFoundError('Agendamentos não encontrado para o cliente informado!');
+            }
+            return res.status(200).json(agendamentos);  
+    }
+
     async buscaByID(req: Request, res: Response) {
         const { id } = req.params
 
@@ -57,21 +75,19 @@ export class PessoaController {
 
     async createAgendamento(req: Request, res: Response) {
         const { idCliente } = req.params
-        const agendamento = req.body;
-        console.log(agendamento);
-        if (!agendamento) {
+        const dadosAgendamento = req.body;
+        if (!dadosAgendamento) {
             throw new BadRequestError('Dados do agendamento não informado!');
+        }else{
+            const cliente = await pessoaRepository.findOneBy({ id: idCliente });
+            if (!cliente) {
+                throw new NotFoundError('O cliente informado não foi encontrado!');
+            }else{
+                dadosAgendamento.cliente = cliente;
+                const novoAgendamento = await agendamentoRepository.create(dadosAgendamento);
+                await agendamentoRepository.save(novoAgendamento);
+                return res.status(201).json(novoAgendamento);
+            }
         }
-
-        const cliente = await pessoaRepository.findOneBy({ id: idCliente });
-        console.log(cliente);
-        if (!cliente) {
-            throw new NotFoundError('O cliente informado não foi encontrado!');
-        }
-        agendamento.cliente = cliente;
-        const novoAgendamento = await agendamentoRepository.create(agendamento);
-        console.log(novoAgendamento);
-        await agendamentoRepository.save(novoAgendamento);
-        return res.status(201).json(novoAgendamento);
     }
 }

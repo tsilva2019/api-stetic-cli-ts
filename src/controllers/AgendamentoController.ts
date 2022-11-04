@@ -6,11 +6,11 @@ export class AgendamentoController {
     async listAll(req: Request, res: Response) {
         try {
             const agendamentos = await agendamentoRepository.findAndCount(
-            //   {
-            //     relations: {
-            //         agendamentos: true
-            //     }
-            // }
+              {
+                relations: {
+                    cliente: true
+                }
+            }
             )
             return res.status(200).json(agendamentos);
         } catch (error) {

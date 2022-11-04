@@ -6,6 +6,7 @@ const routes = Router();
 
 //rotas de pessoas
 routes.get('/pessoas', new PessoaController().listAll);
+routes.get('/pessoas/:idCliente/agendamentos', new PessoaController().listAllAgendamentosCliente);
 routes.get('/pessoas/:id', new PessoaController().buscaByID);
 routes.post('/pessoas', new PessoaController().create);
 routes.post('/pessoas/:idCliente/createagendamento', new PessoaController().createAgendamento);

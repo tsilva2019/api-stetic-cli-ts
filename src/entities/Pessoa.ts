@@ -10,13 +10,13 @@ export class Pessoa {
     @Column({ type: 'text' })
     nome: string
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', unique: true })
     email: string
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', unique: true })
     cpf: string
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', unique: true })
     login: string
 
     @Column({ type: 'text' })
