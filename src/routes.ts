@@ -10,9 +10,11 @@ routes.get('/pessoas/:idCliente/agendamentos', new PessoaController().listAllAge
 routes.get('/pessoas/:id', new PessoaController().buscaByID);
 routes.post('/pessoas', new PessoaController().create);
 routes.post('/pessoas/:idCliente/createagendamento', new PessoaController().createAgendamento);
+routes.post('/pessoas/:id/restorepessoa', new PessoaController().restore);
 routes.put('/pessoas/:id/atualizarpessoa', new PessoaController().update);
 routes.delete('/pessoas/:id/removepessoa', new PessoaController().remove);
-routes.post('/pessoas/:id/restorepessoa', new PessoaController().restore);
+
+
 
 //rotas de agendamentos
 routes.get('/agendamentos', new AgendamentoController().listAll);

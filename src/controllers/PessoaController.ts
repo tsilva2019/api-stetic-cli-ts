@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 import { agendamentoRepository } from "../repositories/agendamentoRepository";
 import { pessoaRepository } from "../repositories/pessoaRepository";
+import bcrypt from 'bcrypt';
 
 export class PessoaController {
 
@@ -14,20 +15,20 @@ export class PessoaController {
 
     async listAllAgendamentosCliente(req: Request, res: Response) {
         const { idCliente } = req.params
-            const agendamentos = await agendamentoRepository.findAndCount({
-                relations: {
-                    cliente: true
-                },
-                where: {
-                    cliente: {
-                        id: idCliente
-                    }
-                },
-            });
-            if (agendamentos[1] === 0) {
-                throw new NotFoundError('Agendamentos não encontrado para o cliente informado!');
-            }
-            return res.status(200).json(agendamentos);  
+        const agendamentos = await agendamentoRepository.findAndCount({
+            relations: {
+                cliente: true
+            },
+            where: {
+                cliente: {
+                    id: idCliente
+                }
+            },
+        });
+        if (agendamentos[1] === 0) {
+            throw new NotFoundError('Agendamentos não encontrado para o cliente informado!');
+        }
+        return res.status(200).json(agendamentos);
     }
 
     async buscaByID(req: Request, res: Response) {
@@ -43,19 +44,26 @@ export class PessoaController {
         const pessoa = req.body;
         if (!pessoa) {
             throw new BadRequestError('Dados obrigatorios não informado!');
+        } else {
+            const cadastroExistente = await pessoaRepository.findOneBy([{ email: pessoa.email }, { cpf: pessoa.cpf }])
+            if (cadastroExistente) {
+                throw new BadRequestError("Usuario já está cadastrado!");
+            } else {
+                pessoa.senha = await bcrypt.hash(pessoa.senha,10)
+                const novaPessoa = pessoaRepository.create(pessoa);
+                const result = await pessoaRepository.save(novaPessoa);
+
+                return res.status(201).json(novaPessoa);
+            }
         }
-        const novaPessoa = pessoaRepository.create(pessoa);
-        console.log(novaPessoa);
-        await pessoaRepository.save(novaPessoa);
-        return res.status(201).json(novaPessoa);
     }
 
     async update(req: Request, res: Response) {
         const { id } = req.params
         const dadosAtualizados = req.body;
 
-        const pessoaAtualizada = await pessoaRepository.update(id, dadosAtualizados);
-        console.log(pessoaAtualizada);
+        await pessoaRepository.update(id, dadosAtualizados);
+        const pessoaAtualizada = await pessoaRepository.findBy({id})
         return res.status(201).json(pessoaAtualizada);
     }
 
@@ -78,11 +86,11 @@ export class PessoaController {
         const dadosAgendamento = req.body;
         if (!dadosAgendamento) {
             throw new BadRequestError('Dados do agendamento não informado!');
-        }else{
+        } else {
             const cliente = await pessoaRepository.findOneBy({ id: idCliente });
             if (!cliente) {
                 throw new NotFoundError('O cliente informado não foi encontrado!');
-            }else{
+            } else {
                 dadosAgendamento.cliente = cliente;
                 const novoAgendamento = await agendamentoRepository.create(dadosAgendamento);
                 await agendamentoRepository.save(novoAgendamento);

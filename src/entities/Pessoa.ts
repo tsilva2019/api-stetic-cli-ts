@@ -16,14 +16,17 @@ export class Pessoa {
     @Column({ type: 'text', unique: true })
     cpf: string
 
-    @Column({ type: 'text', unique: true })
-    login: string
-
     @Column({ type: 'text' })
     senha: string
 
     @Column({type: 'boolean'})
     ativo: boolean
+
+    @Column({type: 'boolean', nullable: true})
+    termo: boolean
+
+    @Column({type: 'boolean', nullable: true})
+    anamnese: boolean
     
     @OneToMany(() => Agendamento, agendamento => agendamento.cliente)
     agendamentos: Agendamento[]
