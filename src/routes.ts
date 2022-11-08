@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PessoaController } from './controllers/PessoaController';
 import { AgendamentoController } from './controllers/AgendamentoController';
+import { LoginController } from './controllers/LoginController';
 
 const routes = Router();
 
@@ -24,5 +25,7 @@ routes.put('/agendamentos/:id/atualizaragendamento', new AgendamentoController()
 routes.delete('/agendamentos/:id/removeagendamento', new AgendamentoController().remove);
 routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().restore);
 
+//rotas de login
+routes.post('/login', new LoginController().login);
 
 export default routes;

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import { Agendamento } from "../entities/Agendamento";
 import { agendamentoRepository } from "../repositories/agendamentoRepository";
+import { pessoaRepository } from "../repositories/pessoaRepository";
 
 export class AgendamentoController {
 
@@ -44,11 +46,12 @@ export class AgendamentoController {
         }
 
         try {
-            const novaagendamento = agendamentoRepository.create(agendamento);
-            console.log(novaagendamento);
-            await agendamentoRepository.save(novaagendamento);
-            return res.status(201).json(novaagendamento);
-
+            const cliente = await pessoaRepository.findOneBy({ id: agendamento.id });
+            agendamento.cliente = cliente;
+            let novoAgendamento = agendamentoRepository.create(agendamento);
+            console.log(novoAgendamento);
+            const agendamentoCriado = await agendamentoRepository.save(novoAgendamento);
+            return res.status(201).json(agendamentoCriado);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ mensagem: 'Server internal error!' })
