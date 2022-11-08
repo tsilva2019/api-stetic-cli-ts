@@ -2,8 +2,16 @@ import { Router } from 'express';
 import { PessoaController } from './controllers/PessoaController';
 import { AgendamentoController } from './controllers/AgendamentoController';
 import { LoginController } from './controllers/LoginController';
+import { authMiddleware } from './middlewares/authMiddleware';
 
 const routes = Router();
+
+routes.post('/login', new LoginController().login);
+
+routes.use(authMiddleware);
+
+//rotas de login
+routes.get('/profile', new LoginController().getProfile);
 
 //rotas de pessoas
 routes.get('/pessoas', new PessoaController().listAll);
@@ -15,8 +23,6 @@ routes.post('/pessoas/:id/restorepessoa', new PessoaController().restore);
 routes.put('/pessoas/:id/atualizarpessoa', new PessoaController().update);
 routes.delete('/pessoas/:id/removepessoa', new PessoaController().remove);
 
-
-
 //rotas de agendamentos
 routes.get('/agendamentos', new AgendamentoController().listAll);
 routes.get('/agendamentos/:id', new AgendamentoController().buscaByID);
@@ -24,8 +30,5 @@ routes.post('/agendamentos', new AgendamentoController().create);
 routes.put('/agendamentos/:id/atualizaragendamento', new AgendamentoController().update);
 routes.delete('/agendamentos/:id/removeagendamento', new AgendamentoController().remove);
 routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().restore);
-
-//rotas de login
-routes.post('/login', new LoginController().login);
 
 export default routes;

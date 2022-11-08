@@ -61,7 +61,7 @@ export class PessoaController {
     async update(req: Request, res: Response) {
         const { id } = req.params
         const dadosAtualizados = req.body;
-
+        dadosAtualizados.senha = await bcrypt.hash(dadosAtualizados.senha,10)
         await pessoaRepository.update(id, dadosAtualizados);
         const pessoaAtualizada = await pessoaRepository.findBy({id})
         return res.status(201).json(pessoaAtualizada);
