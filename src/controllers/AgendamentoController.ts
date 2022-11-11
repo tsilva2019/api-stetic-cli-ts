@@ -1,24 +1,23 @@
 import { Request, Response } from "express";
-import { Agendamento } from "../entities/Agendamento";
+import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 import { agendamentoRepository } from "../repositories/agendamentoRepository";
 import { pessoaRepository } from "../repositories/pessoaRepository";
 
 export class AgendamentoController {
 
     async listAll(req: Request, res: Response) {
-        try {
+
             const agendamentos = await agendamentoRepository.findAndCount(
               {
-                relations: {
-                    cliente: true
-                }
+                relations: { cliente: true }
+            })
+            if(agendamentos[1] === 0) {
+                throw new NotFoundError('Nenhum agendamento encontrado!')
             }
-            )
+            if(!agendamentos) {
+                throw new BadRequestError('Erro na busca!')
+            }
             return res.status(200).json(agendamentos);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ mensagem: 'Server internal error!' })
-        }
     }
 
     async buscaByID(req: Request, res: Response) {
@@ -46,7 +45,7 @@ export class AgendamentoController {
         }
 
         try {
-            const cliente = await pessoaRepository.findOneBy({ id: agendamento.id });
+            const cliente = await pessoaRepository.findOneBy({ id: agendamento.cliente_id});
             agendamento.cliente = cliente;
             let novoAgendamento = agendamentoRepository.create(agendamento);
             console.log(novoAgendamento);

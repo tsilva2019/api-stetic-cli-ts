@@ -3,6 +3,7 @@ import { PessoaController } from './controllers/PessoaController';
 import { AgendamentoController } from './controllers/AgendamentoController';
 import { LoginController } from './controllers/LoginController';
 import { authMiddleware } from './middlewares/authMiddleware';
+import { HabitosDiariosController } from './controllers/HabitosDiariosController';
 
 const routes = Router();
 
@@ -30,5 +31,13 @@ routes.post('/agendamentos', new AgendamentoController().create);
 routes.put('/agendamentos/:id/atualizaragendamento', new AgendamentoController().update);
 routes.delete('/agendamentos/:id/removeagendamento', new AgendamentoController().remove);
 routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().restore);
+
+//rotas de habitos diarios
+routes.get('/habitosDiarios', new HabitosDiariosController().listAll);
+routes.get('/habitosDiarios/:id', new HabitosDiariosController().buscaByID);
+routes.post('/habitosDiarios/:idCLiente', new HabitosDiariosController().create);
+// routes.put('/agendamentos/:id/atualizaragendamento', new AgendamentoController().update);
+// routes.delete('/agendamentos/:id/removeagendamento', new AgendamentoController().remove);
+// routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().restore);
 
 export default routes;
