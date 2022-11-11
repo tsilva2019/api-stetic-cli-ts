@@ -40,6 +40,7 @@ export class AgendamentoController {
 
     async create(req: Request, res: Response) {
         const agendamento = req.body;
+        console.log(agendamento);
         if(!agendamento) {
             return res.status(400).json({ mensagem: 'Dados obrigatorios não informado!' })
         }

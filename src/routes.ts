@@ -35,7 +35,7 @@ routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().
 //rotas de habitos diarios
 routes.get('/habitosDiarios', new HabitosDiariosController().listAll);
 routes.get('/habitosDiarios/:id', new HabitosDiariosController().buscaByID);
-routes.post('/habitosDiarios/:idCLiente', new HabitosDiariosController().create);
+routes.post('/habitosDiarios/:idCliente', new HabitosDiariosController().create);
 // routes.put('/agendamentos/:id/atualizaragendamento', new AgendamentoController().update);
 // routes.delete('/agendamentos/:id/removeagendamento', new AgendamentoController().remove);
 // routes.post('/agendamentos/:id/restoreagendamento', new AgendamentoController().restore);

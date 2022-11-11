@@ -8,7 +8,7 @@ export class HabitosDiarios {
     id: string
 
     @OneToOne(() => Pessoa)
-    @JoinColumn({ name: 'cliente_id'})
+    @JoinColumn({ name: 'cliente_id' })
     cliente: Pessoa
 
     @Column({type: 'boolean', nullable: true})
