@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { IsNull } from "typeorm";
 import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 import { habitosDiariosRepository } from "../repositories/habitosDiariosRepository";
 import { pessoaRepository } from "../repositories/pessoaRepository";
@@ -70,37 +69,34 @@ export class HabitosDiariosController {
         const { id } = req.params
         const dadosAtualizados = req.body;
 
-        try {
+        if(!dadosAtualizados) {
+            throw new BadRequestError('Sem informções para atualizar!')
+        }
             const habitosDiariosAtualizado = await habitosDiariosRepository.update(id, dadosAtualizados);
-            console.log(habitosDiariosAtualizado);
+            //console.log(habitosDiariosAtualizado);
             return res.status(201).json(habitosDiariosAtualizado);
-
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ mensagem: 'Server internal error!' })
-        }
     }
 
-    async remove(req: Request, res: Response) {
-        const { id } = req.params
-        try {
-            await habitosDiariosRepository.softDelete(id);
-            return res.status(201).json({ mensagem: 'Registro removido com sucesso!' });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ mensagem: 'Server internal error!' })
-        }
-    }
+    // async remove(req: Request, res: Response) {
+    //     const { id } = req.params
+    //     try {
+    //         await habitosDiariosRepository.softDelete(id);
+    //         return res.status(201).json({ mensagem: 'Registro removido com sucesso!' });
+    //     } catch (error) {
+    //         console.log(error);
+    //         return res.status(500).json({ mensagem: 'Server internal error!' })
+    //     }
+    // }
 
-    async restore(req: Request, res: Response) {
-        const { id } = req.params
-        try {
-            await habitosDiariosRepository.restore(id);
-            return res.status(201).json({ mensagem: 'Registro restaurado com sucesso!' });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ mensagem: 'Server internal error!' })
-        }
-    }
+    // async restore(req: Request, res: Response) {
+    //     const { id } = req.params
+    //     try {
+    //         await habitosDiariosRepository.restore(id);
+    //         return res.status(201).json({ mensagem: 'Registro restaurado com sucesso!' });
+    //     } catch (error) {
+    //         console.log(error);
+    //         return res.status(500).json({ mensagem: 'Server internal error!' })
+    //     }
+    // }
 
 }
