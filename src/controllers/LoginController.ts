@@ -59,9 +59,8 @@ export class LoginController {
     if(!userVerify) {
       throw new NotFoundError('Profile não encontrado!');
     }
-    const { senha, ...userProfile } = userVerify
 
-    return res.status(200).json(userProfile);
+    return res.status(200).json(userVerify.getPessoaSegura());
   }
 
 }

@@ -39,4 +39,9 @@ export class Pessoa {
 
     @DeleteDateColumn()
     deletedDate: Date
+
+    getPessoaSegura(): Readonly<Object> {
+        const { senha, ...pessoaSegura } = this;
+        return pessoaSegura;
+    }
 }
