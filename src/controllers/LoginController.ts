@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../helpers/api-errors";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "../helpers/api-errors";
 import { pessoaRepository } from "../repositories/pessoaRepository";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+type JWTPayload = {
+  id: string;
+};
 export class LoginController {
   //Executa o login e retorna o token
   async login(req: Request, res: Response) {
@@ -50,6 +53,34 @@ export class LoginController {
         });
       }
     }
+  }
+
+  async validaToken(req: Request, res:Response) {
+    const { authorization } = req.headers;
+
+  if (!authorization) {
+    throw new UnauthorizedError("Necessário token para autenticação!");
+  }
+  const token = authorization.split(" ")[1];
+
+  jwt.verify(token, process.env.JWT_PASS ?? "", function (err, decoded) {
+    if (err) {
+      throw new UnauthorizedError(err.message);
+    }
+    const user = decoded as JWTPayload;
+    if (!user) {
+      throw new UnauthorizedError("Usuário não autorizado!");
+    }
+    // const userVerify = pessoaRepository.findOneBy({
+    //   id: user.id,
+    // });
+    // if (!userVerify) {
+    //   throw new UnauthorizedError("Usuário não autorizado!");
+    // }
+    req.user = user;
+    return res.status(200).json(req.user);
+  });
+
   }
 
   async getProfile(req: Request, res: Response) {

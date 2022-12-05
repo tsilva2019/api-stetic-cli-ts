@@ -8,10 +8,11 @@ import { HabitosDiariosController } from './controllers/HabitosDiariosController
 const routes = Router();
 
 routes.post('/login', new LoginController().login);
-
+routes.post('/pessoas', new PessoaController().create);
 routes.use(authMiddleware);
 
 //rotas de login
+routes.post('/validaToken', new LoginController().validaToken)
 routes.get('/profile', new LoginController().getProfile);
 
 //rotas de pessoas
