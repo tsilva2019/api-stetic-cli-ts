@@ -3,17 +3,18 @@ import { BadRequestError, NotFoundError } from "../helpers/api-errors";
 import { agendamentoRepository } from "../repositories/agendamentoRepository";
 import { pessoaRepository } from "../repositories/pessoaRepository";
 import bcrypt from 'bcrypt';
+import { Pessoa } from "../entities/Pessoa";
 
 export class PessoaController {
 
-    async listAll(req: Request, res: Response) {
+    async listAll(req: Request, res: Response): Promise<Response> {
 
         const pessoas = await pessoaRepository.findAndCount(
         )
         return res.status(200).json(pessoas);
     }
 
-    async listAllAgendamentosCliente(req: Request, res: Response) {
+    async listAllAgendamentosCliente(req: Request, res: Response): Promise<Response> {
         const { idCliente } = req.params
         const agendamentos = await agendamentoRepository.findAndCount({
             relations: {
@@ -31,7 +32,7 @@ export class PessoaController {
         return res.status(200).json(agendamentos);
     }
 
-    async buscaByID(req: Request, res: Response) {
+    async buscaByID(req: Request, res: Response): Promise<Response> {
         const { id } = req.params
 
         const pessoa = await pessoaRepository.findOneBy({ id: id }
@@ -40,7 +41,7 @@ export class PessoaController {
         return res.status(200).json(pessoa);
     }
 
-    async create(req: Request, res: Response) {
+    async create(req: Request, res: Response): Promise<Response> {
         const pessoa = req.body;
         if (!pessoa) {
             throw new BadRequestError('Dados obrigatorios não informado!');
@@ -58,7 +59,7 @@ export class PessoaController {
         }
     }
 
-    async update(req: Request, res: Response) {
+    async update(req: Request, res: Response): Promise<Response> {
         const { id } = req.params
         const dadosAtualizados = req.body;
         if(dadosAtualizados.senha) {
@@ -71,21 +72,21 @@ export class PessoaController {
         return res.status(201).json(pessoaAtualizada?.getPessoaSegura());
     }
 
-    async remove(req: Request, res: Response) {
+    async remove(req: Request, res: Response): Promise<Response> {
         const { id } = req.params
 
         await pessoaRepository.softDelete(id);
         return res.status(201).json({ mensagem: 'Registro removido com sucesso!' });
     }
 
-    async restore(req: Request, res: Response) {
+    async restore(req: Request, res: Response): Promise<Response> {
         const { id } = req.params
 
         await pessoaRepository.restore(id);
         return res.status(201).json({ mensagem: 'Registro restaurado com sucesso!' });
     }
 
-    async createAgendamento(req: Request, res: Response) {
+    async createAgendamento(req: Request, res: Response): Promise<Response> {
         const { idCliente } = req.params
         const dadosAgendamento = req.body;
         if (!dadosAgendamento) {
